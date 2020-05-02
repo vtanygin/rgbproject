@@ -1,0 +1,230 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using ParticleEngine;
+
+namespace Spaceship
+{
+    class Enemy : Entity
+    {
+
+        private float _delay = 0.2f; // seconds
+        private float _remainingDelay; //= _delay;
+        private bool fireevent = false;
+
+        private float _laserdelay = 1f;
+        private float _laserremainingDelay;
+        private bool firingmahlaser = false;
+        public float laser_period = 1f;
+
+        public float angle = MathHelper.PiOver2;
+        Random r;
+        Random r2;
+        public float x_increment = 0;
+        public float y_increment = 0;
+
+        public Texture2D texture;
+        public EnemyType enemyType;
+        public bool IsDead = false;
+        public Vector2 position;
+        //public Vector2 angle_vector;
+        public Color[] colors;
+        public Color body_color;
+        public Color base_color;
+        public float health = 100;
+        ParticleManager<ParticleState> testManager;
+        ParticleManager<ParticleState> deathExplosion;
+        ParticleManager<ParticleState> PW_Splash;
+
+        public Enemy(GameRoot gameRoot, EnemyType enemyType) //number one
+        {
+            deathExplosion = new ParticleManager<ParticleState>(200, ParticleState.UpdateParticle, ParticleManager<ParticleState>.ParticleAttribute.Inert, gameRoot);
+            testManager = new ParticleManager<ParticleState>(200, ParticleState.UpdateParticle, ParticleManager<ParticleState>.ParticleAttribute.EnemyBullet, gameRoot);
+            PW_Splash = new ParticleManager<ParticleState>(200, ParticleState.PW_Splash, ParticleManager<ParticleState>.ParticleAttribute.Inert, gameRoot);
+            r = new Random();
+            r2 = new Random();
+            position = new Vector2(r.Next(gameRoot.graphics.PreferredBackBufferWidth), r2.Next(gameRoot.graphics.PreferredBackBufferHeight));
+            IsDead = false;
+            //_delay = 1.5f;
+            body_color = Color.White;
+            this.enemyType = enemyType;
+
+            colors = new Color[3];
+            colors[0] = Color.Blue;
+            colors[1] = Color.Green;
+            colors[2] = Color.Red;
+            //base_color = colors[r.Next(0, 2)];
+        }
+
+        public enum EnemyType
+        {
+            SlowSpiral,
+            Pinwheel,
+        }
+
+        public static EnemyType[] typelist
+        {
+            get 
+            {
+                //EnemyType[] list = new EnemyType[Enum.GetValues(typeof(EnemyType)).Length];
+                return (EnemyType[])Enum.GetValues(typeof(EnemyType)); //casting EnemyType to Array and back. Seems wasteful but it works.
+            } 
+            
+            private set
+            {
+
+            }
+        }
+
+        public void Kill(GameRoot root)
+        {
+            for (int i = 0; i < 50; i++)
+            {
+                var state = new ParticleState()
+                {
+                    //ParentAngle = (float)rand.NextDouble();
+                    AngleVector = new Vector2((float)r.NextDouble() * r.Next(-10, 10), (float)r.NextDouble() * r.Next(-10, 10)),
+                    Type = ParticleType.None,
+                    LengthMultiplier = 1f
+                };
+                deathExplosion.CreateParticle(root.kirby, position + new Vector2(texture.Width/2f), Color.White, 150, 0.1f, state, root);
+            }
+            IsDead = true;
+        }
+
+        public override void Update(GameRoot gameRoot, GameTime gameTime)
+        {
+            if (health <= 0 && !IsDead)
+            {
+                Kill(gameRoot); //purpose of this "isDead" bool is to ensure the death sequence only gets called once
+                //gameRoot.testvar += 1;
+            }
+
+            if (IsDead)
+            {
+                deathExplosion.Update();
+                if (deathExplosion.ParticleCount == 0)
+                {
+                    EntityManager.enemies.Remove(this); //remove this enemy from the list, which should stop all Update() and Draw() calls
+                    //but don't actually delete it until the death explosion fades, because removing the enemy from the EM will also delete the explosion's PM
+                }
+            }
+
+            if (!IsDead && enemyType == EnemyType.SlowSpiral) //just in case we kill the enemy but somehow don't remove it from the EM
+            {
+                spiral(gameRoot, gameTime);
+            }
+
+            if (!IsDead && enemyType == EnemyType.Pinwheel)
+            {
+                laser(gameRoot, gameTime);
+            }
+
+            if (testManager.CollisionDetected) //if the main gun registers a collision, tell the splashy PM to make the splash effects. 
+            {
+                for (int i = 0; i < 10; i++)
+                {
+                    var state = new ParticleState()
+                    {
+                        //ParentAngle = (float)rand.NextDouble();
+                        AngleVector = new Vector2((float)r.NextDouble() * r.Next(-3, 3), (float)r.NextDouble() * r.Next(-3, 3)),
+                        Type = ParticleType.None,
+                        LengthMultiplier = 1f
+                    };
+                    PW_Splash.CreateParticle(gameRoot.kirby, testManager.CollisionLocation, Color.White, 150, 0.1f, state, gameRoot);
+                }
+
+                testManager.CollisionDetected = false; //turn off the fireworks after we've finished detonating
+            }
+
+            body_color = Color.Lerp(base_color, Color.White, 0.01f*health);
+            testManager.Update();
+            PW_Splash.Update();
+        }
+
+        public override void Draw(GameRoot root, SpriteBatch batch)
+        {
+                testManager.Draw(batch);
+                PW_Splash.Draw(batch);
+                //batch.Draw(root.asteroid, position, Color.White);
+
+            if (IsDead)
+            {
+                deathExplosion.Draw(batch);
+            }
+        }
+
+        public void spiral(GameRoot root, GameTime gameTime)
+        {
+            //_delay = 0.1f*(float)Math.Sin(x_increment);
+            var timer = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            _remainingDelay -= timer;
+
+            if (_remainingDelay <= 0)
+            {
+                fireevent = true;
+                _remainingDelay = _delay;
+            }
+
+            if (fireevent)
+            {
+                //float speed = 18f * (1f - 1 / rand.NextFloat(1f, 10f));
+                var state = new ParticleState()
+                {
+                    AngleVector = new Vector2((float)Math.Cos(x_increment) * 3, (float)Math.Sin(y_increment) * 3),
+                    //AngleVector = new Vector2((float)Math.Cos(x_increment)*r.Next(1,5), (float)Math.Sin(y_increment)*r.Next(1,5)),
+                    Type = ParticleType.None,
+                    LengthMultiplier = 1
+                };
+                x_increment += 0.1f;
+                y_increment += 0.1f;
+                angle += 0.1f;
+                Color color = Color.Lerp(base_color, Color.White, (float)r.NextDouble());
+                testManager.CreateParticle(root.circle, position + new Vector2(root.triangle.Width/2,root.triangle.Height/2), color, base_color, 90, 0.4f, state, root);
+            }
+
+            fireevent = false;
+        }
+
+        public void laser(GameRoot root, GameTime gameTime)
+        {
+            var timer = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            _laserremainingDelay -= timer;
+
+            if (_laserremainingDelay <= 0)
+            {
+                firingmahlaser = true;
+                _laserremainingDelay = _laserdelay;
+            }
+
+            if (firingmahlaser)
+            {
+                //float speed = 18f * (1f - 1 / rand.NextFloat(1f, 10f));
+                var state = new ParticleState()
+                {
+                    AngleVector = new Vector2((float)Math.Cos(x_increment) * 3, (float)Math.Sin(y_increment) * 3),
+                    //AngleVector = new Vector2((float)Math.Cos(x_increment)*r.Next(1,5), (float)Math.Sin(y_increment)*r.Next(1,5)),
+                    Type = ParticleType.None,
+                    LengthMultiplier = 10
+                };
+                x_increment += laser_period * MathHelper.PiOver2 + 0.01f;
+                y_increment += laser_period * MathHelper.PiOver2 + 0.01f;
+                angle += laser_period * MathHelper.PiOver2 + 0.01f;
+                Color color = Color.Lerp(base_color, Color.White, (float)r.NextDouble());
+                testManager.CreateParticle(root.circle, position + new Vector2(root.triangle.Width / 2, root.triangle.Height / 2), color, base_color, 90 + 5*(root.level_counter)*(float)r.NextDouble(), 0.4f, state, root);
+                //progressively increase lifetime as levels increase
+            }
+
+            //this actually gave me a pinwheel. not what I was going for but it sure looks cool. I'm keeping it.
+
+            fireevent = false;
+        }
+    }
+}

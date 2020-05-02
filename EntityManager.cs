@@ -1,0 +1,125 @@
+﻿//---------------------------------------------------------------------------------
+// Written by Michael Hoffman
+// Find the full tutorial at: http://gamedev.tutsplus.com/series/vector-shooter-xna/
+//----------------------------------------------------------------------------------
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ParticleEngine;
+
+namespace Spaceship
+{
+	static class EntityManager
+	{
+		public static List<Entity> entities = new List<Entity>();
+		public static List<Enemy> enemies = new List<Enemy>();
+		public static List<Ship> ships = new List<Ship>();
+
+		static bool isUpdating;
+		static List<Entity> addedEntities = new List<Entity>();
+
+		public static int Count { get { return entities.Count; } }
+
+		public static void Add(Entity entity)
+		{
+			if (!isUpdating)
+				AddEntity(entity);
+			else
+				addedEntities.Add(entity);
+		}
+
+		private static void AddEntity(Entity entity)
+		{
+			entities.Add(entity);
+			if (entity is Enemy)
+				enemies.Add(entity as Enemy);
+			if (entity is Ship)
+				ships.Add(entity as Ship);
+		}
+
+		public static void Update(GameRoot gameRoot, GameTime gameTime)
+		{
+			isUpdating = true;
+			HandleCollisions();
+
+			foreach (var entity in entities)
+				entity.Update(gameRoot, gameTime);
+
+			isUpdating = false;
+
+			foreach (var entity in addedEntities)
+				AddEntity(entity);
+
+			addedEntities.Clear();
+
+			//entities = entities.Where(x => !x.IsExpired).ToList();
+			//enemies = enemies.Where(x => !x.IsExpired).ToList();
+		}
+
+		static void HandleCollisions()
+		{
+			//At the moment, since the only collisions we have are between PM particles and non-particle objects...
+			//Each PM handles collision detection independently.
+			//Is this bad/messy practice? IDK.
+
+			// we have no inter-enemy collisions for now
+			/*for (int i = 0; i < enemies.Count; i++)
+				for (int j = i + 1; j < enemies.Count; j++)
+				{
+					if (IsColliding(enemies[i], enemies[j]))
+					{
+						enemies[i].HandleCollision(enemies[j]);
+						enemies[j].HandleCollision(enemies[i]);
+					}
+				} */
+
+
+			// handle collisions between bullets and enemies
+			/*for (int i = 0; i < enemies.Count; i++)
+				for (int j = 0; j < bullets.Count; j++)
+				{
+					if (IsColliding(enemies[i], bullets[j]))
+					{
+						enemies[i].WasShot();
+						bullets[j].IsExpired = true;
+					}
+				}
+
+			// for now let's not kill the player if they directly touch an enemy
+			/*for (int i = 0; i < enemies.Count; i++)
+			{
+				if (enemies[i].IsActive && IsColliding(PlayerShip.Instance, enemies[i]))
+				{
+					KillPlayer();
+					break;
+				}
+			}*/
+		}
+
+		private static void KillPlayer()
+		{
+
+		}
+
+		/*private static bool IsColliding(Entity a, Entity b)
+		{
+			//float radius = a.Radius + b.Radius;
+			//return !a.IsExpired && !b.IsExpired && Vector2.DistanceSquared(a.Position, b.Position) < radius * radius;
+		}*/
+
+		/*public static IEnumerable<Entity> GetNearbyEntities(Vector2 position, float radius)
+		{
+			return entities.Where(x => Vector2.DistanceSquared(position, x.Position) < radius * radius);
+		}*/
+
+		public static void Draw(GameRoot gameRoot, SpriteBatch spriteBatch)
+		{
+			foreach (var entity in entities)
+				entity.Draw(gameRoot, spriteBatch);
+		}
+	}
+}
