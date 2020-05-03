@@ -44,7 +44,7 @@ namespace Spaceship
 		public static void Update(GameRoot gameRoot, GameTime gameTime)
 		{
 			isUpdating = true;
-			HandleCollisions();
+			HandleCollisions(gameRoot);
 
 			foreach (var entity in entities)
 				entity.Update(gameRoot, gameTime);
@@ -60,13 +60,14 @@ namespace Spaceship
 			//enemies = enemies.Where(x => !x.IsExpired).ToList();
 		}
 
-		static void HandleCollisions()
+		static void HandleCollisions(GameRoot gameRoot)
 		{
 			//At the moment, since the only collisions we have are between PM particles and non-particle objects...
 			//Each PM handles collision detection independently.
 			//Is this bad/messy practice? IDK.
 
 			// we have no inter-enemy collisions for now
+
 			/*for (int i = 0; i < enemies.Count; i++)
 				for (int j = i + 1; j < enemies.Count; j++)
 				{
@@ -87,29 +88,25 @@ namespace Spaceship
 						enemies[i].WasShot();
 						bullets[j].IsExpired = true;
 					}
-				}
+				}*/
 
-			// for now let's not kill the player if they directly touch an enemy
-			/*for (int i = 0; i < enemies.Count; i++)
+			
+			for (int i = 0; i < enemies.Count; i++)
 			{
-				if (enemies[i].IsActive && IsColliding(PlayerShip.Instance, enemies[i]))
+				if (enemies[i].enemyType == Enemy.EnemyType.Seeker && IsColliding(ships[0], enemies[i]) && !ships[0].IsDead && !enemies[i].IsDead)
 				{
-					KillPlayer();
+					ships[0].Kill(gameRoot); //ships[0] is always the player ship fyi
+					enemies[i].Kill(gameRoot); 
 					break;
 				}
-			}*/
+			}
 		}
 
-		private static void KillPlayer()
+		private static bool IsColliding(Entity a, Entity b)
 		{
-
+			float radius = 10;//a.texture.Width + b.texture.Width;
+			return Vector2.DistanceSquared(a.position, b.position) < radius * radius;
 		}
-
-		/*private static bool IsColliding(Entity a, Entity b)
-		{
-			//float radius = a.Radius + b.Radius;
-			//return !a.IsExpired && !b.IsExpired && Vector2.DistanceSquared(a.Position, b.Position) < radius * radius;
-		}*/
 
 		/*public static IEnumerable<Entity> GetNearbyEntities(Vector2 position, float radius)
 		{

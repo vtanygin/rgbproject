@@ -22,16 +22,24 @@ namespace Spaceship
         private bool firingmahlaser = false;
         public float laser_period = 1f;
 
-        public float angle = MathHelper.PiOver2;
+        public float angle = 0;//MathHelper.PiOver2;
         Random r;
         Random r2;
         public float x_increment = 0;
         public float y_increment = 0;
 
-        public Texture2D texture;
+        public override Texture2D texture { get; set; }
         public EnemyType enemyType;
         public bool IsDead = false;
-        public Vector2 position;
+
+        public Vector2 last_position;
+        public override Vector2 position { get; set; }
+        public Vector2 velocity;
+        public Vector2 accel;
+        public float friction = 0.99f;
+        public float rotation_speed = 0f;
+        public float rotation_friction = 0.9f;
+
         //public Vector2 angle_vector;
         public Color[] colors;
         public Color body_color;
@@ -59,12 +67,16 @@ namespace Spaceship
             colors[1] = Color.Green;
             colors[2] = Color.Red;
             //base_color = colors[r.Next(0, 2)];
+
+            velocity = Vector2.Zero;
+            accel = Vector2.One;
         }
 
         public enum EnemyType
         {
             SlowSpiral,
             Pinwheel,
+            Seeker,
         }
 
         public static EnemyType[] typelist
@@ -123,6 +135,11 @@ namespace Spaceship
             if (!IsDead && enemyType == EnemyType.Pinwheel)
             {
                 laser(gameRoot, gameTime);
+            }
+
+            if (!IsDead && enemyType == EnemyType.Seeker)
+            {
+                seeker(gameRoot, gameTime);
             }
 
             if (testManager.CollisionDetected) //if the main gun registers a collision, tell the splashy PM to make the splash effects. 
@@ -225,6 +242,42 @@ namespace Spaceship
             //this actually gave me a pinwheel. not what I was going for but it sure looks cool. I'm keeping it.
 
             fireevent = false;
+        }
+
+        public void seeker(GameRoot root, GameTime gameTime)
+        {
+            Vector2 player_position = EntityManager.ships[0].position;
+            Vector2 direction = player_position - position;
+            Vector2 direction_normalized = player_position - position;
+            direction_normalized.Normalize();
+
+            accel.X = (float)Math.Cos(angle) * 0.05f;
+            accel.Y = (float)Math.Sin(angle) * 0.05f;
+
+            //position += direction_normalized;
+            //So what we could do is just use the above line to make the enemy track the player perfectly. But that's 
+
+            if (angle >= (float)Math.Atan2(direction.Y, direction.X))
+            {
+                rotation_speed -= 0.01f;
+            }
+
+            else if (angle < (float)Math.Atan2(direction.Y, direction.X))
+            {
+                rotation_speed += 0.01f;
+            }
+
+
+
+            velocity += accel;
+            velocity *= friction;
+
+            position += velocity;
+            rotation_speed *= rotation_friction;
+            angle += rotation_speed;
+
+            //angle = (float)Math.Atan2(direction.Y, direction.X);//+ MathHelper.PiOver2;
+            last_position = position;
         }
     }
 }

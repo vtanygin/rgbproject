@@ -11,7 +11,8 @@ namespace Spaceship
 {
     public abstract class Entity
     {
-        //public Vector2 position;
+        public abstract Vector2 position { get; set; }
+        public abstract Texture2D texture { get; set; }
 
         public abstract void Update(GameRoot gameRoot, GameTime gameTime);
 
@@ -22,5 +23,7 @@ namespace Spaceship
         //single list of "Entity" objects. We can then call Entity.Update or Entity.Draw,
         //and the interpreter will automatically call the type-specific version of the method,
         //instead of literally calling Entity.Update.
+        //Same with the properties. If we define a local Entity "myEntity" and refer to its position or texture,
+        //the interpreter will retrieve "Ship.position" or "Enemy.position" depending on the child type of the Entity.
     }
 }

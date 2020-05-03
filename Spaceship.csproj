@@ -109,6 +109,7 @@
     <None Include="Content\spaceFont.xnb" />
     <None Include="Content\timerFont.xnb" />
     <None Include="Content\triangle.xnb" />
+    <None Include="Content\triangle_right.xnb" />
     <None Include="libman.json" />
     <None Include="packages.config" />
   </ItemGroup>

@@ -24,6 +24,7 @@ namespace Spaceship
         public Texture2D circle;
         public Texture2D kirby;
         public Texture2D kirby_white;
+        public Texture2D triangle_right;
 
         public Color[] colors;
         public int color_index;
@@ -49,6 +50,22 @@ namespace Spaceship
             {
                 player.velocity.Y *= -1;
             }
+
+            foreach (var enemy in EntityManager.enemies)
+            {
+                if (enemy.enemyType == Enemy.EnemyType.Seeker)
+                {
+                    if (enemy.position.X >= graphics.PreferredBackBufferWidth || enemy.position.X <= enemy.texture.Width)
+                    {
+                        enemy.velocity.X *= -1;
+                    }
+
+                    if (enemy.position.Y >= graphics.PreferredBackBufferHeight || enemy.position.Y <= enemy.texture.Height)
+                    {
+                        enemy.velocity.Y *= -1;
+                    }
+                }
+            }
         }
         public GameRoot()
         {
@@ -62,7 +79,7 @@ namespace Spaceship
 
             IsMouseVisible = true;
             player = new Ship(this);
-            triangle_enemy = new Enemy(this, Enemy.EnemyType.SlowSpiral);
+            triangle_enemy = new Enemy(this, Enemy.EnemyType.Seeker);
             triangle_enemy.base_color = Color.Blue;
         }
 
@@ -102,7 +119,8 @@ namespace Spaceship
             space = Content.Load<Texture2D>("space");
 
             triangle = Content.Load<Texture2D>("triangle");
-            triangle_enemy.texture = triangle;
+            triangle_right = Content.Load<Texture2D>("triangle_right");
+            triangle_enemy.texture = triangle_right;
 
             circle = Content.Load<Texture2D>("circle");
             kirby = Content.Load<Texture2D>("kirby");

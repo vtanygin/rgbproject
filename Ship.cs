@@ -23,9 +23,9 @@ namespace Spaceship
         public bool color_changed = false;
 
         public float health = 100;
-        public Texture2D texture;
+        public override Texture2D texture { get; set; }
         public bool IsDead = false;
-        public Vector2 position;
+        public override Vector2 position { get; set; }
         public Vector2 velocity = Vector2.Zero;
         public Vector2 accel = Vector2.Zero;
         public float angle = 0f;
@@ -116,8 +116,8 @@ namespace Spaceship
 
             if (keyboardState.IsKeyDown(Keys.Up))
             {
-                velocity.X += (float)Math.Cos(angle) * 0.25f;
-                velocity.Y += (float)Math.Sin(angle) * 0.25f;
+                velocity.X += (float)Math.Cos(angle) * 0.5f;
+                velocity.Y += (float)Math.Sin(angle) * 0.5f;
             }
 
             friction = 1 - velocity.Length() / 50;
