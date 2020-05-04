@@ -93,7 +93,12 @@ namespace Spaceship
 			
 			for (int i = 0; i < enemies.Count; i++)
 			{
-				if (enemies[i].enemyType == Enemy.EnemyType.Seeker && IsColliding(ships[0], enemies[i]) && !ships[0].IsDead && !enemies[i].IsDead)
+				bool colors_match = false;
+				if (enemies[i].base_color == ships[0].color)
+				{
+					colors_match = true;
+				}
+				if (enemies[i].enemyType == Enemy.EnemyType.Seeker && IsColliding(ships[0], enemies[i]) && !ships[0].IsDead && !enemies[i].IsDead && colors_match)
 				{
 					//ships[0].health = 0;
 					//ships[0].Kill(gameRoot); //ships[0] is always the player ship fyi
