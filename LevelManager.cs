@@ -31,7 +31,7 @@ namespace Spaceship
                 e.laser_period = MathHelper.Clamp((float)r.NextDouble(), 1/(i+1), 1f); //increase periodicity limit as levels increase
                 e.x_increment = e.angle; //- MathHelper.PiOver2;
                 e.y_increment = e.angle; //- MathHelper.PiOver2;
-                e.base_color = root.colors[i % root.colors.Length];
+                e.base_color = root.colors[r.Next(10) % root.colors.Length];
                 EntityManager.Add(e);
             }
         }

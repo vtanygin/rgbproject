@@ -95,7 +95,8 @@ namespace Spaceship
 			{
 				if (enemies[i].enemyType == Enemy.EnemyType.Seeker && IsColliding(ships[0], enemies[i]) && !ships[0].IsDead && !enemies[i].IsDead)
 				{
-					ships[0].Kill(gameRoot); //ships[0] is always the player ship fyi
+					//ships[0].health = 0;
+					//ships[0].Kill(gameRoot); //ships[0] is always the player ship fyi
 					enemies[i].Kill(gameRoot); 
 					break;
 				}

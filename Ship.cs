@@ -17,6 +17,10 @@ namespace Spaceship
         private float _remainingDelay = _delay;
         private bool fireevent = false;
 
+        private float _playergun_delay = 0.1f;
+        private float _playergun_remainingdelay;
+        private bool primary_fired = false;
+
         public Color[] colors;
         public Color color;
         public int color_index;
@@ -30,7 +34,7 @@ namespace Spaceship
         public Vector2 accel = Vector2.Zero;
         public float angle = 0f;
         public float friction = 1f;
-        public bool primary_fired = false;
+
         public Vector2 pos_normalized;
         public Vector2 angle_vector;
         public float scale;
@@ -183,9 +187,19 @@ namespace Spaceship
 
             if (keyboardState.IsKeyDown(Keys.A) && !primary_fired)
             {
-                primary_fired = true;
-                PrimaryWeapon(root);
+                var timer = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                _playergun_remainingdelay -= timer;
+
+                if (_playergun_remainingdelay <= 0)
+                {
+                    PrimaryWeapon(root);
+                    primary_fired = true;
+                    _playergun_remainingdelay = _playergun_delay;
+                }
             }
+
+            primary_fired = false;
 
             if (keyboardState.IsKeyDown(Keys.B))
             {
@@ -253,12 +267,12 @@ namespace Spaceship
             var state = new ParticleState()
             {
                 ParentAngle = angle,
-                AngleVector = angle_vector * 5,// + velocity,
+                AngleVector = angle_vector * 5+ velocity,
                 Type = ParticleType.None,
                 LengthMultiplier = 1f
             };
 
-            primaryweapon_PM.CreateParticle(root.circle, position - root.player_origin , color, color, 300, 1f, state, root); //reassign origin to a ship property later
+            primaryweapon_PM.CreateParticle(root.circle, position - root.player_origin , color, color, 300, 0.5f, state, root); //reassign origin to a ship property later
         }
 
         public void testbigexplosion(GameRoot root)

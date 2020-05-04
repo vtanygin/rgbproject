@@ -70,6 +70,11 @@ namespace Spaceship
 
             velocity = Vector2.Zero;
             accel = Vector2.One;
+
+            if (enemyType == EnemyType.Seeker)
+            {
+                health = 50; //since they kill the player on contact, make them frailer than baseline so they're not quite as scary to deal with.
+            }
         }
 
         public enum EnemyType
@@ -114,6 +119,9 @@ namespace Spaceship
             if (health <= 0 && !IsDead)
             {
                 Kill(gameRoot); //purpose of this "isDead" bool is to ensure the death sequence only gets called once
+                //isDead is handy because we can use it to stop all Draw and Update calls for the Enemy object itself,
+                //but persist any particles/other stuff it has spawned until they expire. Only then do we actually
+                //remove it from the EntityManager.
                 //gameRoot.testvar += 1;
             }
 
@@ -246,6 +254,12 @@ namespace Spaceship
 
         public void seeker(GameRoot root, GameTime gameTime)
         {
+            //what must be done here
+
+            //The seeker's color is not known until the player shoots it. That could be annoying.
+            //So let's give him an exhaust trail matching his color.
+            //And update him so that he only kills the player if their colors match.
+
             Vector2 player_position = EntityManager.ships[0].position;
             Vector2 direction = player_position - position;
             Vector2 direction_normalized = player_position - position;
@@ -255,7 +269,11 @@ namespace Spaceship
             accel.Y = (float)Math.Sin(angle) * 0.05f;
 
             //position += direction_normalized;
-            //So what we could do is just use the above line to make the enemy track the player perfectly. But that's 
+            //So what we could do is just use the above line to make the enemy track the player perfectly. But that's not very interesting.
+            //Instead, we have the seeker check its angle vs the angle of the vector pointing at the player.
+            //If they're off, adjust slightly.
+            //This slight adjustment makes the seeker "overshoot" the player consistently if we're not just sitting still.
+            //It feels more "alive" that way, if that makes sense.
 
             if (angle >= (float)Math.Atan2(direction.Y, direction.X))
             {
