@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Input;
 using Penumbra;
 using ParticleEngine;
 using System;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace Spaceship
 {
@@ -126,6 +128,8 @@ namespace Spaceship
             kirby = Content.Load<Texture2D>("kirby");
             kirby_white = Content.Load<Texture2D>("kirby_white");
             player.texture = kirby_white;
+
+            Song default_song = Content.Load<Song>("default_song");
 
 
             gamefont = Content.Load<SpriteFont>("spaceFont");
