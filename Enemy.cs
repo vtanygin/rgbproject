@@ -6,12 +6,16 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 using ParticleEngine;
 
 namespace Spaceship
 {
     class Enemy : Entity
     {
+
+        public SoundEffectInstance death_sound;
+        bool death_sound_played = false;
 
         private float _delay = 0.2f; // seconds
         private float _remainingDelay; //= _delay;
@@ -116,6 +120,12 @@ namespace Spaceship
 
         public override void Update(GameRoot gameRoot, GameTime gameTime)
         {
+            if (gameRoot.enemy_death_sfx != null && death_sound == null)
+            {
+                death_sound = gameRoot.enemy_death_sfx.CreateInstance();
+                // gun_loop.IsLooped = true;
+            }
+
             if (health <= 0 && !IsDead)
             {
                 Kill(gameRoot); //purpose of this "isDead" bool is to ensure the death sequence only gets called once
@@ -127,6 +137,12 @@ namespace Spaceship
 
             if (IsDead)
             {
+                if (!death_sound_played)
+                {
+                    death_sound.Play();
+                    death_sound_played = true;
+                }
+
                 deathExplosion.Update();
                 if (deathExplosion.ParticleCount == 0)
                 {

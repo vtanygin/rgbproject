@@ -17,6 +17,13 @@ namespace Spaceship
         public GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        Song default_song;
+        bool song_playing = false;
+
+        public SoundEffect player_gun_sfx;
+        public SoundEffect enemy_death_sfx;
+        public SoundEffect enemy_hurt_sfx;
+
         public float testvar;
 
         public Texture2D ship;
@@ -129,7 +136,11 @@ namespace Spaceship
             kirby_white = Content.Load<Texture2D>("kirby_white");
             player.texture = kirby_white;
 
-            Song default_song = Content.Load<Song>("default_song");
+            default_song = Content.Load<Song>("Compact 31");
+            player_gun_sfx = Content.Load<SoundEffect>("player_gun_sfx");
+
+            enemy_death_sfx = Content.Load<SoundEffect>("0204 - SE_MG_CONV_BOMB1");
+            enemy_hurt_sfx = Content.Load<SoundEffect>("00e6 - SE_ENEHITM");
 
 
             gamefont = Content.Load<SpriteFont>("spaceFont");
@@ -152,6 +163,12 @@ namespace Spaceship
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if (!song_playing)
+            {
+                MediaPlayer.Play(default_song);
+                song_playing = true;
+            }
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 

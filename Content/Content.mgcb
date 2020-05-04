@@ -13,6 +13,30 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin 0087 - SE_YAKU_ELEC.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:0087 - SE_YAKU_ELEC.wav
+
+#begin 00a4 - SE_BOSS_BEAM_LP.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:00a4 - SE_BOSS_BEAM_LP.wav;player_gun_sfx.wav
+
+#begin 00e6 - SE_ENEHITM.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:00e6 - SE_ENEHITM.wav
+
+#begin 0204 - SE_MG_CONV_BOMB1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:0204 - SE_MG_CONV_BOMB1.wav
+
 #begin asteroid.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -36,6 +60,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:circle.png
+
+#begin Compact 31.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Compact 31.mp3
 
 #begin diamond.png
 /importer:TextureImporter

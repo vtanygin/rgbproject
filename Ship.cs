@@ -8,11 +8,16 @@ using System.Security;
 using System.Text;
 using System.Threading.Tasks;
 using ParticleEngine;
+using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Spaceship
 {
     class Ship : Entity
     {
+        public SoundEffectInstance gun_loop;
+        public SoundEffectInstance enemy_hurt;
+
         private const float _delay = 2; // seconds
         private float _remainingDelay = _delay;
         private bool fireevent = false;
@@ -176,6 +181,16 @@ namespace Spaceship
 
         public override void Update(GameRoot root, GameTime gameTime)
         {
+            if (root.player_gun_sfx!= null && gun_loop == null)
+            {
+                gun_loop = root.player_gun_sfx.CreateInstance();
+               // gun_loop.IsLooped = true;
+            }
+
+            if (root.enemy_hurt_sfx != null && enemy_hurt == null)
+            {
+                enemy_hurt = root.enemy_hurt_sfx.CreateInstance();
+            }
 
             pos_normalized = position;
             pos_normalized.Normalize();
@@ -185,6 +200,17 @@ namespace Spaceship
 
             angle_vector = new Vector2(x,y);
 
+            if (keyboardState.IsKeyDown(Keys.A))
+            {
+                gun_loop.Play();
+            }
+
+            else
+            {
+                gun_loop.Stop();
+            }
+
+
             if (keyboardState.IsKeyDown(Keys.A) && !primary_fired)
             {
                 var timer = (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -193,10 +219,12 @@ namespace Spaceship
 
                 if (_playergun_remainingdelay <= 0)
                 {
+
                     PrimaryWeapon(root);
                     primary_fired = true;
                     _playergun_remainingdelay = _playergun_delay;
                 }
+                
             }
 
             primary_fired = false;
@@ -235,6 +263,7 @@ namespace Spaceship
 
             if (primaryweapon_PM.CollisionDetected) //if the main gun registers a collision, tell the splashy PM to make the splash effects. 
             {
+                enemy_hurt.Play();
                 for (int i = 0; i < 10; i++)
                 {
                     var state = new ParticleState()

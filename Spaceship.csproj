@@ -99,8 +99,12 @@
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
+    <None Include="Content\0087 - SE_YAKU_ELEC.xnb" />
+    <None Include="Content\00e6 - SE_ENEHITM.xnb" />
+    <None Include="Content\0204 - SE_MG_CONV_BOMB1.xnb" />
     <None Include="Content\asteroid.xnb" />
     <None Include="Content\circle.xnb" />
+    <None Include="Content\Compact 31.xnb" />
     <None Include="Content\diamond.xnb" />
     <None Include="Content\kirby.xnb" />
     <None Include="Content\kirby_white.xnb" />
