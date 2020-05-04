@@ -25,6 +25,12 @@
 /processorParam:Quality=Best
 /build:00a4 - SE_BOSS_BEAM_LP.wav;player_gun_sfx.wav
 
+#begin 00ca - SE_ONEUP67.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:00ca - SE_ONEUP67.wav
+
 #begin 00e6 - SE_ENEHITM.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -102,6 +108,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:kirby_white.png
+
+#begin Sensitive Acid Boy.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sensitive Acid Boy.mp3
 
 #begin ship.png
 /importer:TextureImporter

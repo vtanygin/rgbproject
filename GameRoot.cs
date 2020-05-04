@@ -17,14 +17,17 @@ namespace Spaceship
         public GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        Song default_song2;
         Song default_song;
         bool song_playing = false;
 
         public SoundEffect player_gun_sfx;
         public SoundEffect enemy_death_sfx;
         public SoundEffect enemy_hurt_sfx;
+        public SoundEffect life_up_sfx;
 
         public float testvar;
+        public int score = 0;
 
         public Texture2D ship;
         public Texture2D asteroid;
@@ -137,10 +140,13 @@ namespace Spaceship
             player.texture = kirby_white;
 
             default_song = Content.Load<Song>("Compact 31");
+            default_song2 = Content.Load<Song>("Sensitive Acid Boy");
             player_gun_sfx = Content.Load<SoundEffect>("player_gun_sfx");
 
             enemy_death_sfx = Content.Load<SoundEffect>("0204 - SE_MG_CONV_BOMB1");
             enemy_hurt_sfx = Content.Load<SoundEffect>("00e6 - SE_ENEHITM");
+
+            life_up_sfx = Content.Load<SoundEffect>("00ca - SE_ONEUP67");
 
 
             gamefont = Content.Load<SpriteFont>("spaceFont");
@@ -167,6 +173,12 @@ namespace Spaceship
             {
                 MediaPlayer.Play(default_song);
                 song_playing = true;
+            }
+
+            if (MediaPlayer.State != MediaState.Playing
+                    && MediaPlayer.PlayPosition.TotalSeconds == 0.0f)
+            {
+                MediaPlayer.Play(default_song2);
             }
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -227,6 +239,8 @@ namespace Spaceship
 
             //spriteBatch.DrawString(timerfont, player.angle_vector.ToString(),new Vector2(150),Color.White);
             spriteBatch.DrawString(timerfont, "Health: " + testvar.ToString(), new Vector2(50), Color.White);
+            spriteBatch.DrawString(timerfont, "Score: " + score.ToString(), new Vector2(50,100), Color.White);
+            spriteBatch.DrawString(timerfont, "Lives: " + EntityManager.ships[0].lives.ToString(), new Vector2(50, 150), Color.White);
             spriteBatch.DrawString(timerfont, "Level: " + level_counter.ToString(), new Vector2(1200,50), Color.White);
 
             EntityManager.Draw(this, spriteBatch); //This calls the methods that draw anything else that the player and enemies create (particles mostly)

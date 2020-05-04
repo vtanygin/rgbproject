@@ -17,6 +17,7 @@ namespace Spaceship
     {
         public SoundEffectInstance gun_loop;
         public SoundEffectInstance enemy_hurt;
+        public SoundEffectInstance life_up;
 
         private const float _delay = 2; // seconds
         private float _remainingDelay = _delay;
@@ -30,6 +31,9 @@ namespace Spaceship
         public Color color;
         public int color_index;
         public bool color_changed = false;
+
+        public int lives = 1;
+        private bool life_score_bonus_given = false;
 
         public float health = 100;
         public override Texture2D texture { get; set; }
@@ -181,6 +185,7 @@ namespace Spaceship
 
         public override void Update(GameRoot root, GameTime gameTime)
         {
+            //for ease of reading, pull out all of these condition checks into separate methods with clear names giving their purpose, and then just call all the methods inside Update()
             if (root.player_gun_sfx!= null && gun_loop == null)
             {
                 gun_loop = root.player_gun_sfx.CreateInstance();
@@ -192,6 +197,11 @@ namespace Spaceship
                 enemy_hurt = root.enemy_hurt_sfx.CreateInstance();
             }
 
+            if (root.life_up_sfx != null && life_up == null)
+            {
+                life_up = root.life_up_sfx.CreateInstance();
+            }
+
             pos_normalized = position;
             pos_normalized.Normalize();
 
@@ -199,6 +209,18 @@ namespace Spaceship
             var y = (float)Math.Sin(angle);
 
             angle_vector = new Vector2(x,y);
+
+            if (root.score % 500 == 0 && !life_score_bonus_given && root.score!=0)
+            {
+                lives++;
+                life_up.Play();
+                life_score_bonus_given = true;
+            }
+
+            else if (root.score % 500 !=0)
+            {
+                life_score_bonus_given = false;
+            }
 
             if (keyboardState.IsKeyDown(Keys.A))
             {
@@ -275,7 +297,8 @@ namespace Spaceship
                     };
                     PW_Splash.CreateParticle(root.kirby, primaryweapon_PM.CollisionLocation, Color.White, 150, 0.1f, state, root);
                 }
-                
+
+                root.score += 25;
                 primaryweapon_PM.CollisionDetected = false; //turn off the fireworks after we've finished detonating
             }
 

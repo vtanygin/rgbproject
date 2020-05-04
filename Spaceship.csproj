@@ -100,6 +100,7 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.manifest" />
     <None Include="Content\0087 - SE_YAKU_ELEC.xnb" />
+    <None Include="Content\00ca - SE_ONEUP67.xnb" />
     <None Include="Content\00e6 - SE_ENEHITM.xnb" />
     <None Include="Content\0204 - SE_MG_CONV_BOMB1.xnb" />
     <None Include="Content\asteroid.xnb" />
@@ -108,6 +109,7 @@
     <None Include="Content\diamond.xnb" />
     <None Include="Content\kirby.xnb" />
     <None Include="Content\kirby_white.xnb" />
+    <None Include="Content\Sensitive Acid Boy.xnb" />
     <None Include="Content\ship.xnb" />
     <None Include="Content\space.xnb" />
     <None Include="Content\spaceFont.xnb" />
