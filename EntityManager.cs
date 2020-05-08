@@ -129,9 +129,23 @@ namespace Spaceship
 					{
 						loots[i].pickedup = true;
 						ships[0].pickups.Add(loots[i]);
+
+						SetSomeStuffBasedOnTheLoot(loots[i].lootType);
 					}
 
 				}
+			}
+		}
+
+		private static void SetSomeStuffBasedOnTheLoot(Loot.LootType type)
+		{
+			switch (type)
+			{
+				case Loot.LootType.Trishot:
+					EntityManager.ships[0].primary_weapon.weaponType = Weapon.WeaponType.Trishot;
+					break;
+				default:
+					break;
 			}
 		}
 
@@ -150,7 +164,13 @@ namespace Spaceship
 		public static void Draw(GameRoot gameRoot, SpriteBatch spriteBatch)
 		{
 			foreach (var entity in entities)
-				entity.Draw(gameRoot, spriteBatch);
+			{
+				if (entity.DoDraw)
+				{
+					entity.Draw(gameRoot, spriteBatch);
+				}
+			}
+
 		}
 	}
 }

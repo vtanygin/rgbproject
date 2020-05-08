@@ -111,6 +111,7 @@
     <None Include="Content\diamond.xnb" />
     <None Include="Content\kirby.xnb" />
     <None Include="Content\kirby_white.xnb" />
+    <None Include="Content\powerup_bar.xnb" />
     <None Include="Content\Sensitive Acid Boy.xnb" />
     <None Include="Content\ship.xnb" />
     <None Include="Content\space.xnb" />

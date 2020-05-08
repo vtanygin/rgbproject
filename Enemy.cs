@@ -14,6 +14,8 @@ namespace Spaceship
     class Enemy : Entity
     {
 
+        public override bool DoDraw { get; set; }
+
         public SoundEffectInstance death_sound;
         bool death_sound_played = false;
 
@@ -55,6 +57,8 @@ namespace Spaceship
 
         public Enemy(GameRoot gameRoot, EnemyType enemyType) //number one
         {
+            DoDraw = true;
+
             deathExplosion = new ParticleManager<ParticleState>(200, ParticleState.UpdateParticle, ParticleManager<ParticleState>.ParticleAttribute.Inert, gameRoot);
             testManager = new ParticleManager<ParticleState>(200, ParticleState.UpdateParticle, ParticleManager<ParticleState>.ParticleAttribute.EnemyBullet, gameRoot);
             PW_Splash = new ParticleManager<ParticleState>(200, ParticleState.PW_Splash, ParticleManager<ParticleState>.ParticleAttribute.Inert, gameRoot);

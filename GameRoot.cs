@@ -38,6 +38,7 @@ namespace Spaceship
         public Texture2D kirby_white;
         public Texture2D triangle_right;
         public Texture2D diamond;
+        public Texture2D powerup_bar;
 
         public Color[] colors;
         public int color_index;
@@ -46,8 +47,8 @@ namespace Spaceship
         Ship player;
         Enemy triangle_enemy;
 
-        SpriteFont gamefont;
-        SpriteFont timerfont;
+        public SpriteFont gamefont;
+        public SpriteFont timerfont;
 
         public Vector2 player_origin = new Vector2(58 / 2f, 60 / 2f); //height and width of the sprite since nothing outside LoadContent can see this otherwise
         public Vector2 triangle_origin = new Vector2(32 / 2f);
@@ -139,6 +140,7 @@ namespace Spaceship
             kirby = Content.Load<Texture2D>("kirby");
             kirby_white = Content.Load<Texture2D>("kirby_white");
             player.texture = kirby_white;
+            powerup_bar = Content.Load<Texture2D>("powerup_bar");
 
             diamond = Content.Load<Texture2D>("diamond");
 

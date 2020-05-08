@@ -13,6 +13,7 @@ namespace Spaceship
     {
         public abstract Vector2 position { get; set; }
         public abstract Texture2D texture { get; set; }
+        public abstract bool DoDraw { get; set; }
 
         public abstract void Update(GameRoot gameRoot, GameTime gameTime);
 

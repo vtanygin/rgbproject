@@ -15,6 +15,8 @@ namespace Spaceship
 {
     public class Ship : Entity
     {
+        public override bool DoDraw { get; set; }
+
         public SoundEffectInstance gun_loop;
         public SoundEffectInstance enemy_hurt;
         public SoundEffectInstance life_up;
@@ -70,6 +72,7 @@ namespace Spaceship
 
         public Ship(GameRoot root)
         {
+            DoDraw = true;
             position = new Vector2(100);//new Vector2(rand.Next(root.graphics.PreferredBackBufferWidth), rand.Next(root.graphics.PreferredBackBufferHeight));
             texture = root.kirby_white;
             lives = 1;
@@ -87,7 +90,7 @@ namespace Spaceship
             colors[2] = Color.Red;
 
             pickups = new List<Loot>();
-            primary_weapon = new Weapon(root, this, Weapon.WeaponType.Trishot);
+            primary_weapon = new Weapon(root, this, Weapon.WeaponType.Default);
 
             //Now look at this. UpdateParticle came with the engine, but now we made a custom update method for the main gun's bullets.
         }
