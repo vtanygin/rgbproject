@@ -116,6 +116,14 @@ namespace Spaceship
                 deathExplosion.CreateParticle(root.kirby, position + new Vector2(texture.Width/2f), Color.White, 150, 0.1f, state, root);
             }
             IsDead = true;
+
+            Random lootRNG = new Random();
+
+            if (lootRNG.Next(10) < 6)
+            {
+                Loot loot = new Loot(root, Loot.LootType.Trishot);
+                loot.position = this.position;
+            }
         }
 
         public override void Update(GameRoot gameRoot, GameTime gameTime)

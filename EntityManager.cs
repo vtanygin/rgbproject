@@ -18,6 +18,7 @@ namespace Spaceship
 		public static List<Entity> entities = new List<Entity>();
 		public static List<Enemy> enemies = new List<Enemy>();
 		public static List<Ship> ships = new List<Ship>();
+		public static List<Loot> loots = new List<Loot>();
 
 		static bool isUpdating;
 		static List<Entity> addedEntities = new List<Entity>();
@@ -39,6 +40,8 @@ namespace Spaceship
 				enemies.Add(entity as Enemy);
 			if (entity is Ship)
 				ships.Add(entity as Ship);
+			if (entity is Loot)
+				loots.Add(entity as Loot);
 		}
 
 		public static void Update(GameRoot gameRoot, GameTime gameTime)
@@ -62,8 +65,8 @@ namespace Spaceship
 
 		static void HandleCollisions(GameRoot gameRoot)
 		{
-			//At the moment, since the only collisions we have are between PM particles and non-particle objects...
-			//Each PM handles collision detection independently.
+			//So for particles...I found it easier to have...
+			//...each PM handle collision detection independently.
 			//Is this bad/messy practice? IDK.
 
 			// we have no inter-enemy collisions for now
@@ -79,7 +82,7 @@ namespace Spaceship
 				} */
 
 
-			// handle collisions between bullets and enemies
+			// bullets are treated as particles in my game, so the EM doesn't handle this.
 			/*for (int i = 0; i < enemies.Count; i++)
 				for (int j = 0; j < bullets.Count; j++)
 				{
@@ -90,7 +93,7 @@ namespace Spaceship
 					}
 				}*/
 
-			
+			//If the seeker collides with a same-color player, they both die.
 			for (int i = 0; i < enemies.Count; i++)
 			{
 				bool colors_match = false;
@@ -106,11 +109,36 @@ namespace Spaceship
 					break;
 				}
 			}
+
+			//Loot pickups handled here
+			for (int i = 0; i < loots.Count; i++)
+			{
+				if (IsColliding(ships[0], loots[i]) && !ships[0].IsDead)
+				{
+					bool pickthislootup = true; //by default we grab everything...
+					foreach (var player_loot in ships[0].pickups)
+					{
+						if (Loot.sameLootType(player_loot,loots[i]) && !loots[i].stackable)
+						{
+							pickthislootup = false; //...but if we've found something the player already has, and doesn't stack, don't pick it up.
+							break; //as soon as we find something non-stackable, no need to keep looping; break out and continue.
+						}
+					}
+
+					if (pickthislootup)
+					{
+						loots[i].pickedup = true;
+						ships[0].pickups.Add(loots[i]);
+					}
+
+				}
+			}
 		}
 
 		private static bool IsColliding(Entity a, Entity b)
 		{
-			float radius = 10;//a.texture.Width + b.texture.Width;
+			//yeah I should fix this as it's kinda busted
+			float radius = a.texture.Width + b.texture.Width;
 			return Vector2.DistanceSquared(a.position, b.position) < radius * radius;
 		}
 

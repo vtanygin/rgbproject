@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace Spaceship
 {
-    class Ship : Entity
+    public class Ship : Entity
     {
         public SoundEffectInstance gun_loop;
         public SoundEffectInstance enemy_hurt;
@@ -32,8 +32,9 @@ namespace Spaceship
         public int color_index;
         public bool color_changed = false;
 
-        public int lives = 1;
+        public int lives;
         private bool life_score_bonus_given = false;
+        private bool life_decremented = false;
 
         public float health = 100;
         public override Texture2D texture { get; set; }
@@ -47,6 +48,11 @@ namespace Spaceship
         public Vector2 pos_normalized;
         public Vector2 angle_vector;
         public float scale;
+
+        public Weapon primary_weapon;
+
+        public List<Loot> pickups;
+
         Random rand = new Random();
         KeyboardState keyboardState;
         MouseState mouseState;
@@ -65,6 +71,9 @@ namespace Spaceship
         public Ship(GameRoot root)
         {
             position = new Vector2(100);//new Vector2(rand.Next(root.graphics.PreferredBackBufferWidth), rand.Next(root.graphics.PreferredBackBufferHeight));
+            texture = root.kirby_white;
+            lives = 1;
+
             testManager = new ParticleManager<ParticleState>(200, ParticleState.UpdateParticle, ParticleManager<ParticleState>.ParticleAttribute.Inert, root);
             primaryweapon_PM = new ParticleManager<ParticleState>(200, ParticleState.Update_PW_Bullets, ParticleManager<ParticleState>.ParticleAttribute.PlayerBullet, root);
             PW_Splash = new ParticleManager<ParticleState>(200, ParticleState.PW_Splash, ParticleManager<ParticleState>.ParticleAttribute.Inert, root);
@@ -77,8 +86,29 @@ namespace Spaceship
             colors[1] = Color.Green;
             colors[2] = Color.Red;
 
+            pickups = new List<Loot>();
+            primary_weapon = new Weapon(root, this, Weapon.WeaponType.Trishot);
+
             //Now look at this. UpdateParticle came with the engine, but now we made a custom update method for the main gun's bullets.
         }
+
+       /* Ship(GameRoot root, int dummy)
+        {
+            texture = root.kirby_white;
+            IsDead = false;
+        }
+
+        public Ship RespawnShip(GameRoot root, Ship oldship)
+        {
+            Ship newship = new Ship(root, 0);
+            newship.deathExplosion = oldship.deathExplosion;
+            newship.primaryweapon_PM = oldship.primaryweapon_PM;
+            newship.PW_Splash = oldship.PW_Splash;
+            newship.position = oldship.position;
+            newship.color = oldship.
+
+            return newship;
+        }*/
 
         void Movement()
         //rewrite this such that
@@ -241,8 +271,8 @@ namespace Spaceship
 
                 if (_playergun_remainingdelay <= 0)
                 {
-
-                    PrimaryWeapon(root);
+                    primary_weapon.Fire(300, 0.5f, primary_weapon.weaponType);
+                    //PrimaryWeapon(root);
                     primary_fired = true;
                     _playergun_remainingdelay = _playergun_delay;
                 }
@@ -276,14 +306,27 @@ namespace Spaceship
                 deathExplosion.Update();
                 if (deathExplosion.ParticleCount == 0)
                 {
-                    EntityManager.ships.Remove(this); //remove this enemy from the list, which should stop all Update() and Draw() calls
-                    //but don't actually delete it until the death explosion fades, because removing the enemy from the EM will also delete the explosion's PM
+                    var respawn_pos = position;
+
+                    if (lives > 0  && !life_decremented)
+                    {
+                        lives--;
+                        life_decremented = true;
+                        health = 100;
+                        velocity = Vector2.Zero;
+                        accel = Vector2.Zero;
+                        //EntityManager.Add(this); //If we still have extra lives, I found it was simpler to persist the ship in the EntityManager on death...
+                        //...and just put Kirby back where he died with zero vel/accel, and turn off the IsDead flag so the game resumes drawing and updating him.
+                        IsDead = false;
+                    }
                 }
             }
 
+            life_decremented = false;
+
             Movement();
 
-            if (primaryweapon_PM.CollisionDetected) //if the main gun registers a collision, tell the splashy PM to make the splash effects. 
+            if (primary_weapon.particleManager.CollisionDetected) //if the main gun registers a collision, tell the splashy PM to make the splash effects. 
             {
                 enemy_hurt.Play();
                 for (int i = 0; i < 10; i++)
@@ -295,15 +338,17 @@ namespace Spaceship
                         Type = ParticleType.None,
                         LengthMultiplier = 1f
                     };
-                    PW_Splash.CreateParticle(root.kirby, primaryweapon_PM.CollisionLocation, Color.White, 150, 0.1f, state, root);
+                    PW_Splash.CreateParticle(root.kirby, primary_weapon.particleManager.CollisionLocation, Color.White, 150, 0.1f, state, root);
                 }
 
                 root.score += 25;
-                primaryweapon_PM.CollisionDetected = false; //turn off the fireworks after we've finished detonating
+                primary_weapon.particleManager.CollisionDetected = false;
+                //primaryweapon_PM.CollisionDetected = false; //turn off the fireworks after we've finished detonating
             }
 
             root.testvar = health;
-            primaryweapon_PM.Update();
+            primary_weapon.particleManager.Update(); //could wrap the PM Update() call in a Update() for the weapon itself
+            //primaryweapon_PM.Update();
             PW_Splash.Update();
         }
 
@@ -324,6 +369,17 @@ namespace Spaceship
                 LengthMultiplier = 1f
             };
 
+            if (false)
+            {
+                //I don't know how to handle loot exactly.
+                //It seems wasteful to iterate through the entire list and look for pickups that change the player's PW.
+                //I could create a weapon class; when the "Trishot" loot is picked up, have the EM create a new instance
+                //of the weapon class, and add it to the player.
+                //Within the weapon class, include a weapontype enum, a PM field, and an initial PState field
+                //In the constructor, create the PM, create the initial PState, and choose a preset ParticleState from the ParticleState struct for updates beyond initial.
+                //Do all of that based on the enum on creation, and you're good.
+            }
+
             primaryweapon_PM.CreateParticle(root.circle, position - root.player_origin , color, color, 300, 0.5f, state, root); //reassign origin to a ship property later
         }
 
@@ -343,37 +399,10 @@ namespace Spaceship
             }
         }
 
-        public void spiral(GameRoot root, GameTime gameTime)
-        {
-            var timer = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            _remainingDelay -= timer;
-
-            if (_remainingDelay <= 0)
-            {
-                fireevent = true;
-                _remainingDelay = _delay;
-            }
-
-            if (fireevent)
-            {
-                //float speed = 18f * (1f - 1 / rand.NextFloat(1f, 10f));
-                var state = new ParticleState()
-                {
-                    AngleVector = angle_vector,
-                    Type = ParticleType.None,
-                    LengthMultiplier = 1
-                };
-                Color color = Color.Lerp(Color.Blue, Color.White, (float)rand.NextDouble());
-                testManager.CreateParticle(root.circle, position - root.player_origin, color, 1900, 1f, state, root);
-            }
-
-            fireevent = false;
-        }
-
         public override void Draw(GameRoot root, SpriteBatch batch)
         {
-                primaryweapon_PM.Draw(batch);
+            //primaryweapon_PM.Draw(batch);
+            primary_weapon.particleManager.Draw(batch); //could wrap the PM Draw() call in a Draw() for the weapon itself
                 PW_Splash.Draw(batch);
 
 

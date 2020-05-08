@@ -37,6 +37,7 @@ namespace Spaceship
         public Texture2D kirby;
         public Texture2D kirby_white;
         public Texture2D triangle_right;
+        public Texture2D diamond;
 
         public Color[] colors;
         public int color_index;
@@ -139,6 +140,8 @@ namespace Spaceship
             kirby_white = Content.Load<Texture2D>("kirby_white");
             player.texture = kirby_white;
 
+            diamond = Content.Load<Texture2D>("diamond");
+
             default_song = Content.Load<Song>("Compact 31");
             default_song2 = Content.Load<Song>("Sensitive Acid Boy");
             player_gun_sfx = Content.Load<SoundEffect>("player_gun_sfx");
@@ -225,6 +228,14 @@ namespace Spaceship
                 if (!ship.IsDead)
                 {
                     spriteBatch.Draw(ship.texture, new Vector2(player.position.X - 34, player.position.Y - 50), null, ship.color, ship.angle, player_origin, player.scale, SpriteEffects.None, 0f);
+                }
+            }
+
+            foreach (var loot in EntityManager.loots)
+            {
+                if (!loot.pickedup)
+                {
+                    spriteBatch.Draw(loot.texture, loot.position, Color.White);
                 }
             }
 
