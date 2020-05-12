@@ -13,7 +13,7 @@ namespace Spaceship
 {
     class Enemy : Entity
     {
-
+        public override float scale { get; set; }
         public override bool DoDraw { get; set; }
 
         public SoundEffectInstance death_sound;
@@ -40,6 +40,7 @@ namespace Spaceship
 
         public Vector2 last_position;
         public override Vector2 position { get; set; }
+        public override Vector2 origin { get; set; }
         public Vector2 velocity;
         public Vector2 accel;
         public float friction = 0.99f;
@@ -55,9 +56,12 @@ namespace Spaceship
         ParticleManager<ParticleState> deathExplosion;
         ParticleManager<ParticleState> PW_Splash;
 
+        private int timeUntilStart = 60;
+
         public Enemy(GameRoot gameRoot, EnemyType enemyType) //number one
         {
             DoDraw = true;
+            scale = 1f;
 
             deathExplosion = new ParticleManager<ParticleState>(200, ParticleState.UpdateParticle, ParticleManager<ParticleState>.ParticleAttribute.Inert, gameRoot);
             testManager = new ParticleManager<ParticleState>(200, ParticleState.UpdateParticle, ParticleManager<ParticleState>.ParticleAttribute.EnemyBullet, gameRoot);
@@ -67,7 +71,7 @@ namespace Spaceship
             position = new Vector2(r.Next(gameRoot.graphics.PreferredBackBufferWidth), r2.Next(gameRoot.graphics.PreferredBackBufferHeight));
             IsDead = false;
             //_delay = 1.5f;
-            body_color = Color.White;
+            body_color = Color.Transparent;
             this.enemyType = enemyType;
 
             colors = new Color[3];
@@ -123,15 +127,31 @@ namespace Spaceship
 
             Random lootRNG = new Random();
 
-            if (lootRNG.Next(10) < 6)
+            if (lootRNG.Next(10) < 3)
             {
                 Loot loot = new Loot(root, Loot.LootType.Trishot);
                 loot.position = this.position;
             }
         }
 
+        void FadeIn()
+        {
+            if (timeUntilStart <= 0)
+            {
+                return;
+            }
+            else
+            {
+                timeUntilStart--;
+                body_color = Color.White * (1 - timeUntilStart / 60f);
+            }
+        }
+
         public override void Update(GameRoot gameRoot, GameTime gameTime)
         {
+
+            FadeIn();
+
             if (gameRoot.enemy_death_sfx != null && death_sound == null)
             {
                 death_sound = gameRoot.enemy_death_sfx.CreateInstance();
@@ -195,7 +215,12 @@ namespace Spaceship
                 testManager.CollisionDetected = false; //turn off the fireworks after we've finished detonating
             }
 
-            body_color = Color.Lerp(base_color, Color.White, 0.01f*health);
+            if (timeUntilStart <= 0)
+            {
+                body_color = Color.Lerp(base_color, Color.White, 0.01f * health);
+            }
+
+            
             testManager.Update();
             PW_Splash.Update();
         }

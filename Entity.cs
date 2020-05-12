@@ -11,7 +11,9 @@ namespace Spaceship
 {
     public abstract class Entity
     {
+        public abstract Vector2 origin { get; set; }
         public abstract Vector2 position { get; set; }
+        public abstract float scale { get; set; }
         public abstract Texture2D texture { get; set; }
         public abstract bool DoDraw { get; set; }
 

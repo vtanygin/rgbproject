@@ -39,6 +39,7 @@ namespace Spaceship
         public Texture2D triangle_right;
         public Texture2D diamond;
         public Texture2D powerup_bar;
+        public Texture2D hexagon;
 
         public Color[] colors;
         public int color_index;
@@ -46,6 +47,7 @@ namespace Spaceship
 
         Ship player;
         Enemy triangle_enemy;
+        Barrier test_barrier;
 
         public SpriteFont gamefont;
         public SpriteFont timerfont;
@@ -95,6 +97,7 @@ namespace Spaceship
             player = new Ship(this);
             triangle_enemy = new Enemy(this, Enemy.EnemyType.Seeker);
             triangle_enemy.base_color = Color.Blue;
+            test_barrier = new Barrier(this);
         }
 
         /// <summary>
@@ -108,6 +111,7 @@ namespace Spaceship
             EntityManager.Add(player);
             player.scale = 1f;
             EntityManager.Add(triangle_enemy);
+            EntityManager.Add(test_barrier);
 
             colors = new Color[3];
             colors[0] = Color.Blue;
@@ -141,6 +145,9 @@ namespace Spaceship
             kirby_white = Content.Load<Texture2D>("kirby_white");
             player.texture = kirby_white;
             powerup_bar = Content.Load<Texture2D>("powerup_bar");
+
+            hexagon = Content.Load<Texture2D>("hexagon_1024"); //I have an idea for this...use it as a wall.
+            test_barrier.texture = hexagon;
 
             diamond = Content.Load<Texture2D>("diamond");
 
@@ -216,6 +223,12 @@ namespace Spaceship
             spriteBatch.Begin();
 
             spriteBatch.Draw(space, Vector2.Zero, Color.White);
+            //spriteBatch.Draw(hexagon, new Vector2(200), null, Color.White, 0f, Vector2.Zero, 0.5f, SpriteEffects.None, 1f);
+
+            foreach (var barrier in EntityManager.barriers)
+            {
+                spriteBatch.Draw(barrier.texture, barrier.position, null, Color.White, 0f, Vector2.Zero, barrier.scale, SpriteEffects.None, 1f);
+            }
 
             foreach (var enemy in EntityManager.enemies)
             {
@@ -237,7 +250,7 @@ namespace Spaceship
             {
                 if (!loot.pickedup)
                 {
-                    spriteBatch.Draw(loot.texture, loot.position, Color.White);
+                    spriteBatch.Draw(loot.texture, loot.position, null, Color.White, loot.sprite_rotation, new Vector2(loot.texture.Width/2,loot.texture.Height/2), loot.sprite_scale, SpriteEffects.None, 1f);
                 }
             }
 

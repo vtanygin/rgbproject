@@ -15,6 +15,9 @@ namespace Spaceship
 {
     public class Ship : Entity
     {
+        public override float scale { get; set; }
+
+        public override Vector2 origin { get; set; }
         public override bool DoDraw { get; set; }
 
         public SoundEffectInstance gun_loop;
@@ -49,7 +52,6 @@ namespace Spaceship
 
         public Vector2 pos_normalized;
         public Vector2 angle_vector;
-        public float scale;
 
         public Weapon primary_weapon;
 
@@ -76,6 +78,7 @@ namespace Spaceship
             position = new Vector2(100);//new Vector2(rand.Next(root.graphics.PreferredBackBufferWidth), rand.Next(root.graphics.PreferredBackBufferHeight));
             texture = root.kirby_white;
             lives = 1;
+            scale = 1f;
 
             testManager = new ParticleManager<ParticleState>(200, ParticleState.UpdateParticle, ParticleManager<ParticleState>.ParticleAttribute.Inert, root);
             primaryweapon_PM = new ParticleManager<ParticleState>(200, ParticleState.Update_PW_Bullets, ParticleManager<ParticleState>.ParticleAttribute.PlayerBullet, root);

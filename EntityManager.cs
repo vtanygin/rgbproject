@@ -19,6 +19,7 @@ namespace Spaceship
 		public static List<Enemy> enemies = new List<Enemy>();
 		public static List<Ship> ships = new List<Ship>();
 		public static List<Loot> loots = new List<Loot>();
+		public static List<Barrier> barriers = new List<Barrier>();
 
 		static bool isUpdating;
 		static List<Entity> addedEntities = new List<Entity>();
@@ -42,6 +43,9 @@ namespace Spaceship
 				ships.Add(entity as Ship);
 			if (entity is Loot)
 				loots.Add(entity as Loot);
+			if (entity is Barrier)
+				barriers.Add(entity as Barrier);
+
 		}
 
 		public static void Update(GameRoot gameRoot, GameTime gameTime)
@@ -65,6 +69,8 @@ namespace Spaceship
 
 		static void HandleCollisions(GameRoot gameRoot)
 		{
+			//Should pull out methods for each individual collision scenario
+
 			//So for particles...I found it easier to have...
 			//...each PM handle collision detection independently.
 			//Is this bad/messy practice? IDK.
@@ -135,6 +141,19 @@ namespace Spaceship
 
 				}
 			}
+
+			BarrierCollisionCheck();
+		}
+
+		private static void BarrierCollisionCheck()
+		{
+			for (int i = 0; i < barriers.Count; i++)
+			{
+				if (IsColliding(ships[0], barriers[i]) && !ships[0].IsDead)
+				{
+					ships[0].velocity *= -1;
+				}
+			}
 		}
 
 		private static void SetSomeStuffBasedOnTheLoot(Loot.LootType type)
@@ -151,8 +170,9 @@ namespace Spaceship
 
 		private static bool IsColliding(Entity a, Entity b)
 		{
+
 			//yeah I should fix this as it's kinda busted
-			float radius = a.texture.Width + b.texture.Width;
+			float radius = a.texture.Width*a.scale + b.texture.Width*b.scale;
 			return Vector2.DistanceSquared(a.position, b.position) < radius * radius;
 		}
 

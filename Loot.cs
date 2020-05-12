@@ -10,16 +10,21 @@ namespace Spaceship
 {
     public class Loot : Entity
     {
+        public override float scale { get; set; }
         public bool pickedup;
         public bool stackable;
         public float powerup_timer;
         public bool start_timer;
         public bool temporary;
         public bool expired;
+        public float sprite_rotation = 0f;
+        public float sprite_scale = 1f;
+        public bool scale_up = true;
         public LootType lootType;
         public override Texture2D texture { get; set; }
 
         public override Vector2 position { get; set; }
+        public override Vector2 origin { get; set; }
 
         public override bool DoDraw { get; set; }
 
@@ -32,6 +37,7 @@ namespace Spaceship
         {
             DoDraw = true;
             this.lootType = lootType;
+            scale = 1f;
 
             switch (this.lootType)
             {
@@ -90,6 +96,32 @@ namespace Spaceship
                 expired = true;
             }
 
+            sprite_rotation += 0.1f;
+            PulseSprite();
+
+        }
+
+        private void PulseSprite()
+        {
+            if (scale_up)
+            {
+                sprite_scale += 0.01f;
+            }
+
+            if (!scale_up)
+            {
+                sprite_scale -= 0.01f;
+            }
+
+            if (sprite_scale >= 1.2f)
+            {
+                scale_up = false;
+            }
+
+            if (sprite_scale <= 0.8f)
+            {
+                scale_up = true;
+            }
         }
 
         private void ExpireLoot()
@@ -107,7 +139,7 @@ namespace Spaceship
             }
 
             //Now this is some crappy code design that's going to become unwieldy
-            //as I add more loot. But it works for now
+            //as I add more loot. But it works for now.
         }
 
         public override void Draw(GameRoot gameRoot, SpriteBatch spriteBatch)
