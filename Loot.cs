@@ -148,8 +148,8 @@ namespace Spaceship
             //...so unless we want the loot to have some kind of particle effects, we can just leave this empty.
                 if (this.temporary && powerup_timer >= 0 && pickedup)
                 {
-                    spriteBatch.DrawString(gameRoot.timerfont, "Trishot: " + powerup_timer.ToString(), new Vector2(500, 50), Color.Lerp(Color.White, Color.TransparentBlack, 1 - powerup_timer/5f));
-                    spriteBatch.Draw(gameRoot.powerup_bar, new Vector2(500, 100), null, Color.Lerp(Color.White, Color.TransparentBlack, 1 - powerup_timer / 5f), 0f, Vector2.Zero, new Vector2(powerup_timer/5f,0.5f), SpriteEffects.None, 1f);
+                    spriteBatch.DrawString(gameRoot.timerfont, "Trishot: " + powerup_timer.ToString(), new Vector2(500, 50), Color.Lerp(Color.White, Color.Black, 1 - powerup_timer/5f));
+                    spriteBatch.Draw(gameRoot.powerup_bar, new Vector2(500, 100), null, Color.Lerp(Color.White, Color.Black, 1 - powerup_timer / 5f), 0f, Vector2.Zero, new Vector2(powerup_timer/5f,0.5f), SpriteEffects.None, 1f);
                 }
         }
     }

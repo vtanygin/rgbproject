@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Penumbra;
+//using Penumbra;
 using ParticleEngine;
 using System;
 using Microsoft.Xna.Framework.Audio;
@@ -151,9 +151,9 @@ namespace Spaceship
 
             diamond = Content.Load<Texture2D>("diamond");
 
-            default_song = Content.Load<Song>("Compact 31");
-            default_song2 = Content.Load<Song>("Sensitive Acid Boy");
-            player_gun_sfx = Content.Load<SoundEffect>("player_gun_sfx");
+            //default_song = Content.Load<Song>("Compact 31");
+            //default_song2 = Content.Load<Song>("Sensitive Acid Boy");
+           // player_gun_sfx = Content.Load<SoundEffect>("player_gun_sfx");
 
             enemy_death_sfx = Content.Load<SoundEffect>("0204 - SE_MG_CONV_BOMB1");
             enemy_hurt_sfx = Content.Load<SoundEffect>("00e6 - SE_ENEHITM");
@@ -183,14 +183,14 @@ namespace Spaceship
         {
             if (!song_playing)
             {
-                MediaPlayer.Play(default_song);
+                //MediaPlayer.Play(default_song);
                 song_playing = true;
             }
 
             if (MediaPlayer.State != MediaState.Playing
                     && MediaPlayer.PlayPosition.TotalSeconds == 0.0f)
             {
-                MediaPlayer.Play(default_song2);
+               // MediaPlayer.Play(default_song2);
             }
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))

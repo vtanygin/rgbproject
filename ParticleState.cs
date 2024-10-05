@@ -153,7 +153,7 @@ namespace ParticleEngine
 
 			ParticleEffects.WallCollision(particle);
 
-			particle.Color = Color.Lerp(particle.Color, Color.TransparentBlack, 0.01f);
+			particle.Color = Color.Lerp(particle.Color, Color.Black, 0.01f);
 
 			//Color color = Color.Lerp(Color.Blue, Color.White, (float)rand.NextDouble());
 
@@ -208,7 +208,7 @@ namespace ParticleEngine
 
 				particle.Orientation = particle.State.ParentAngle - MathHelper.PiOver2;//(float)Math.Asin(vel.X); //+ MathHelper.PiOver2;
 
-			particle.Color = Color.Lerp(particle.Color, Color.TransparentBlack, 0.01f);
+			particle.Color = Color.Lerp(particle.Color, Color.Black, 0.01f);
 
 
 			if (particle.State.Type != ParticleType.IgnoreGravity)

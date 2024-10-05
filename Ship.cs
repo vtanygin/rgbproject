@@ -260,12 +260,12 @@ namespace Spaceship
 
             if (keyboardState.IsKeyDown(Keys.A))
             {
-                gun_loop.Play();
+                //gun_loop.Play();
             }
 
             else
             {
-                gun_loop.Stop();
+               // gun_loop.Stop();
             }
 
 
