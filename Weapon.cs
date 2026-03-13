@@ -96,8 +96,15 @@ namespace Spaceship
                         initial_state.AngleVector = player_ship.angle_vector * 5 + player_ship.velocity + new Vector2((float)Math.Sin(i*MathHelper.PiOver2),(float)Math.Cos(i*MathHelper.PiOver2));
                         particleManager.CreateParticle(bullet_texture, player_ship.position - gameRoot.player_origin, player_ship.color, player_ship.color, duration, scale, initial_state, gameRoot);
                     }
-                    break; //I mean it's not perfect, but the concept works.
-                    //I bet you could reuse that loop code for some neat new enemy bullet patterns.
+                    break;
+                case WeaponType.Ringshot:
+                    for (int i = 0; i < 12; i++)
+                    {
+                        float angle = i * (MathHelper.TwoPi / 12);
+                        initial_state.AngleVector = new Vector2((float)Math.Sin(angle), (float)Math.Cos(angle)) + player_ship.velocity;
+                        particleManager.CreateParticle(bullet_texture, player_ship.position - gameRoot.player_origin, player_ship.color, player_ship.color, duration, scale, initial_state, gameRoot);
+                    }
+                    break;
                 default:
                     break;
             }
