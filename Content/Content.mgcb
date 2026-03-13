@@ -43,6 +43,12 @@
 /processorParam:Quality=Best
 /build:0204 - SE_MG_CONV_BOMB1.wav
 
+#begin 2-16-23 piano test v4.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:2-16-23 piano test v4.mp3
+
 #begin asteroid.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -85,18 +91,6 @@
 /processorParam:TextureFormat=Color
 /build:diamond.png
 
-#begin hexagon.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:hexagon.png
-
 #begin hexagon_1024.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -109,7 +103,7 @@
 /processorParam:TextureFormat=Color
 /build:hexagon_1024.png
 
-#begin kirby.png
+#begin hexagon.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -119,7 +113,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:kirby.png
+/build:hexagon.png
 
 #begin kirby_white.png
 /importer:TextureImporter
@@ -132,6 +126,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:kirby_white.png
+
+#begin kirby.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:kirby.png
 
 #begin powerup_bar.png
 /importer:TextureImporter
@@ -189,18 +195,6 @@
 /processorParam:TextureFormat=Compressed
 /build:timerFont.spritefont
 
-#begin triangle.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:triangle.png
-
 #begin triangle_right.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -212,4 +206,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:triangle_right.png
+
+#begin triangle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:triangle.png
 

@@ -151,7 +151,7 @@ namespace Spaceship
 
             diamond = Content.Load<Texture2D>("diamond");
 
-            //default_song = Content.Load<Song>("Compact 31");
+            //default_song = Content.Load<Song>("9-26-24 v3");
             //default_song2 = Content.Load<Song>("Sensitive Acid Boy");
            // player_gun_sfx = Content.Load<SoundEffect>("player_gun_sfx");
 
