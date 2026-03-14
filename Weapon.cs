@@ -30,6 +30,7 @@ namespace Spaceship
         {
             Default,
             Trishot,
+            Ringshot,
         }
 
         public Weapon(GameRoot root, Ship player, WeaponType type)
@@ -44,6 +45,9 @@ namespace Spaceship
                     particleManager = new ParticleManager<ParticleState>(200, ParticleState.Update_PW_Bullets, ParticleManager<ParticleState>.ParticleAttribute.PlayerBullet, root);
                     break;
                 case WeaponType.Trishot:
+                    particleManager = new ParticleManager<ParticleState>(200, ParticleState.Update_PW_Bullets, ParticleManager<ParticleState>.ParticleAttribute.PlayerBullet, root);
+                    break;
+                case WeaponType.Ringshot:
                     particleManager = new ParticleManager<ParticleState>(200, ParticleState.Update_PW_Bullets, ParticleManager<ParticleState>.ParticleAttribute.PlayerBullet, root);
                     break;
                 default:
@@ -73,6 +77,15 @@ namespace Spaceship
                         Type = ParticleType.None,
                         LengthMultiplier = 1f
                     };
+                    break;
+                case WeaponType.RingShot:
+                    initial_state = new ParticleState()
+                    {
+                        ParentAngle = player_ship.angle,
+                        AngleVector = player_ship.angle_vector * 5 + player_ship.velocity,
+                        Type = ParticleType.None,
+                        LengthMultiplier = 1f
+                    }
                     break;
                 default:
                     break;

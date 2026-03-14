@@ -132,7 +132,6 @@ namespace Spaceship
                 Loot loot = new Loot(root, Loot.LootType.Trishot);
                 loot.position = this.position;
             }
-        }
 
         void FadeIn()
         {

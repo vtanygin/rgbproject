@@ -163,7 +163,10 @@ namespace Spaceship
 				case Loot.LootType.Trishot:
 					EntityManager.ships[0].primary_weapon.weaponType = Weapon.WeaponType.Trishot;
 					break;
-				default:
+                case Loot.LootType.Ringshot:
+                    EntityManager.ships[0].primary_weapon.weaponType = Weapon.WeaponType.Ringshot;
+                    break;
+                default:
 					break;
 			}
 		}

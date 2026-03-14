@@ -30,7 +30,8 @@ namespace Spaceship
 
         public enum LootType
         {
-            Trishot
+            Trishot,
+            Ringshot
         }
 
         public Loot(GameRoot root, LootType lootType)
@@ -47,6 +48,13 @@ namespace Spaceship
                     expired = false;
                     temporary = true;
                     powerup_timer = 5f;
+                    break;
+                case LootType.Ringshot:
+                    texture = root.kirby_white;
+                    stackable = false;
+                    expired = false;
+                    temporary= true;
+                    powerup_timer = 6f;
                     break;
                 default:
                     break;
@@ -134,6 +142,9 @@ namespace Spaceship
                 case LootType.Trishot:
                     EntityManager.ships[0].primary_weapon.weaponType = Weapon.WeaponType.Default;
                     break;
+                case LootType.Ringshot:
+                    EntityManager.ships[0].primary_weapon.weaponType = Weapon.WeaponType.Default;
+                    break;
                 default:
                     break;
             }
@@ -148,7 +159,7 @@ namespace Spaceship
             //...so unless we want the loot to have some kind of particle effects, we can just leave this empty.
                 if (this.temporary && powerup_timer >= 0 && pickedup)
                 {
-                    spriteBatch.DrawString(gameRoot.timerfont, "Trishot: " + powerup_timer.ToString(), new Vector2(500, 50), Color.Lerp(Color.White, Color.Black, 1 - powerup_timer/5f));
+                    //spriteBatch.DrawString(gameRoot.timerfont, this.lootType.tostring() + "filler " + powerup_timer.ToString(), new Vector2(500, 50), Color.Lerp(Color.White, Color.Black, 1 - powerup_timer/5f));
                     spriteBatch.Draw(gameRoot.powerup_bar, new Vector2(500, 100), null, Color.Lerp(Color.White, Color.Black, 1 - powerup_timer / 5f), 0f, Vector2.Zero, new Vector2(powerup_timer/5f,0.5f), SpriteEffects.None, 1f);
                 }
         }
